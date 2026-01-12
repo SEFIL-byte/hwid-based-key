@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Key System</title>
+</head>
+<body style="background:#0f0f0f;color:white;text-align:center;font-family:Arial;padding-top:60px">
+
+<h1>🔑 Key System</h1>
+<p id="status">Checking your key...</p>
+
+<button id="btn" onclick="start()">Get Key</button>
+
+<script>
+function getBrowserId() {
+  let id = localStorage.getItem("browser_id");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("browser_id", id);
+  }
+  return id;
+}
+
+async function checkStatus() {
+  const res = await fetch("/api/status", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ browser_id: getBrowserId() })
+  });
+
+  const data = await res.json();
+
+  if (data.active) {
+    document.getElementById("status").innerText =
+      "Your key is active. Time left: " + data.time;
+    document.getElementById("btn").disabled = true;
+  } else {
+    document.getElementById("status").innerText =
+      "No active key.";
+  }
+}
+
+function start() {
+  location.href = "/task1.html";
+}
+
+checkStatus();
+</script>
+
+</body>
+</html>

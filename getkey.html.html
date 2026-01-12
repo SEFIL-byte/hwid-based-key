@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body style="background:#0f0f0f;color:white;text-align:center;font-family:Arial;padding-top:60px">
+
+<h2>Your Key</h2>
+<button onclick="generate()">Generate Key</button>
+<p id="out"></p>
+
+<script>
+function getBrowserId() {
+  return localStorage.getItem("browser_id");
+}
+
+async function generate() {
+  const res = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ browser_id: getBrowserId() })
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    document.getElementById("out").innerText =
+      "You already have an active key.";
+  } else {
+    document.getElementById("out").innerText =
+      "Your key:\n" + data.key;
+  }
+}
+</script>
+
+</body>
+</html>
